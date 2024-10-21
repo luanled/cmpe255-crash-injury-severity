@@ -9,7 +9,7 @@ cmpe255-crash-injury-severity/
 │  ├──  processed/  # Cleaned and processed data files
 │
 ├──  notebooks/  # Jupyter notebooks used for data analysis
-│  ├──  exploration.ipynb  # Initial exploration and analysis
+│  ├──  visualize_preprocessed_data.ipynb  # Initial exploration and analysis
 │
 ├──  scripts/
 │  ├──  preprocess_data.py  # Python script for data cleaning and preprocessing
@@ -20,9 +20,5 @@ cmpe255-crash-injury-severity/
 ## Install requirements
 ```bash
 pip  install  -r  requirements.txt
-```
-## Run the Preprocessing Script
-```bash
-py scripts/preprocess_data.py
 ```
 Make sure the crash and vehicle datasets are in data/raw, and data/processed is existed to contain the output files.

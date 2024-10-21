@@ -56,7 +56,7 @@ def preprocess_vehicle_crash_data_key_attributes(df):
     
     # Driver Age: Handle missing values, and categorize into groups
     df['Age'] = pd.to_numeric(df['Age'], errors='coerce')
-    df['AgeGroup'] = pd.cut(df['Age'], bins=[-1, 18, 30, 45, 60, 1000], labels=['<18', '18-30', '31-45', '46-60', '60+'])
+    df['AgeGroup'] = pd.cut(df['Age'], bins=[0, 18, 30, 45, 60, 1000], labels=['<18', '18-30', '31-45', '46-60', '60+'])
     
 
     
@@ -68,16 +68,16 @@ def preprocess_vehicle_crash_data_key_attributes(df):
     
     return df
 
-# Load datasets (adjust file paths as needed)
-crashes_df = pd.read_csv('data/raw/crashdata2022-present.csv')
-vehicle_crashes_df = pd.read_csv('data/raw/vehiclecrashdata2022-present.csv')
+# # Load datasets (adjust file paths as needed)
+# crashes_df = pd.read_csv('data/raw/crashdata2022-present.csv')
+# vehicle_crashes_df = pd.read_csv('data/raw/vehiclecrashdata2022-present.csv')
 
-# Applying the updated preprocessing functions
-preprocessed_crashes_data_key = preprocess_crashes_data_key_attributes(crashes_df)
-preprocessed_vehicle_data_key = preprocess_vehicle_crash_data_key_attributes(vehicle_crashes_df)
+# # Applying the updated preprocessing functions
+# preprocessed_crashes_data_key = preprocess_crashes_data_key_attributes(crashes_df)
+# preprocessed_vehicle_data_key = preprocess_vehicle_crash_data_key_attributes(vehicle_crashes_df)
 
-# Save preprocessed data
-preprocessed_crashes_data_key.to_csv('data/processed/preprocessed_crashes_data.csv', index=False)
-preprocessed_vehicle_data_key.to_csv('data/processed/preprocessed_vehicle_data.csv', index=False)
+# # Save preprocessed data
+# preprocessed_crashes_data_key.to_csv('data/processed/preprocessed_crashes_data.csv', index=False)
+# preprocessed_vehicle_data_key.to_csv('data/processed/preprocessed_vehicle_data.csv', index=False)
 
-print("Preprocessing complete, files saved in 'data/processed/'")
+# print("Preprocessing complete, files saved in 'data/processed/'")
