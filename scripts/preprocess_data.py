@@ -15,7 +15,6 @@ sobriety_mapping = {
 party_type_mapping = {
     "Bicycle": 0,
     "Bus - Other": 1,
-    "Bus - School": 2,
     "Car": 3,
     "Car With Trailer": 4,
     "Construction Equipment": 5,
