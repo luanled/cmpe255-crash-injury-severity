@@ -15,6 +15,7 @@ sobriety_mapping = {
 party_type_mapping = {
     "Bicycle": 0,
     "Bus - Other": 1,
+    "Bus - School": 2,
     "Car": 3,
     "Car With Trailer": 4,
     "Construction Equipment": 5,
@@ -32,10 +33,38 @@ party_type_mapping = {
     "Other": 17,
     "Unknown": 18
 }
+
+# New mappings based on screenshots
+primary_collision_factor_mapping = {
+    "Bike At Fault": 0,
+    "Other Improper Driving": 1,
+    "Other Than Driver": 2,
+    "Pedestrian At Fault": 3,
+    "Unknown": 4,
+    "Violation Driver 1": 5,
+    "Violation Driver 2": 6
+}
+
+collision_type_mapping = {
+    "Broadside": 0,
+    "Head On": 1,
+    "Hit Object": 2,
+    "Other": 3,
+    "Overturned": 4,
+    "Rear End": 5,
+    "Sideswipe": 6,
+    "Vehicle/Bike": 7,
+    "Vehicle/Pedestrian": 8
+}
+
 # Preprocess function for 'Crashes 2022 - Present'
 def preprocess_crashes_data_key_attributes(df):
-    key_attributes = ['CrashFactId', 'Name', 'MinorInjuries', 'ModerateInjuries', 'SevereInjuries', 'FatalInjuries', 'CrashDateTime', 'SpeedingFlag']
-
+    key_attributes = [
+        'CrashFactId', 'Name', 'MinorInjuries', 'ModerateInjuries', 
+        'SevereInjuries', 'FatalInjuries', 'CrashDateTime', 'SpeedingFlag',
+        'PrimaryCollisionFactor', 'CollisionType', 'HitAndRunFlag'  # Added new features
+    ]
+    
     df = df.loc[:, key_attributes]
     
     # Crash Time: Extract only the time from CrashDateTime
@@ -45,19 +74,26 @@ def preprocess_crashes_data_key_attributes(df):
     # Speeding Flag: Ensure binary format
     df['SpeedingFlag'] = df['SpeedingFlag'].apply(lambda x: 1 if x == True else 0)
     
+    # Hit and Run Flag: Ensure binary format
+    df['HitAndRunFlag'] = df['HitAndRunFlag'].apply(lambda x: 1 if x == True else 0)
+    
+    # Primary Collision Factor: Apply mapping
+    df['PrimaryCollisionFactor_Code'] = df['PrimaryCollisionFactor'].map(primary_collision_factor_mapping)
+    
+    # Collision Type: Apply mapping
+    df['CollisionType_Code'] = df['CollisionType'].map(collision_type_mapping)
+    
     return df
 
 # Preprocess function for 'Vehicles 2022 - Present'
 def preprocess_vehicle_crash_data_key_attributes(df): 
-    key_attributes = ['CrashName', 'PartyType', 'Age', 'Sobriety']  # Adjust as per your actual columns
+    key_attributes = ['CrashName', 'PartyType', 'Age', 'Sobriety']
     
     df = df.loc[:, key_attributes]
     
     # Driver Age: Handle missing values, and categorize into groups
     df['Age'] = pd.to_numeric(df['Age'], errors='coerce')
-    df['AgeGroup'] = pd.cut(df['Age'], bins=[0, 18, 30, 45, 60, 1000], labels=['<18', '18-30', '31-45', '46-60', '60+'])
-    
-
+    df['AgeGroup'] = pd.cut(df['Age'], bins=[-1, 18, 30, 45, 60, 1000], labels=['<18', '18-30', '31-45', '46-60', '60+'])
     
     # Apply the mapping to the 'Sobriety' column
     df['Sobriety_Code'] = df['Sobriety'].map(sobriety_mapping)
@@ -68,15 +104,15 @@ def preprocess_vehicle_crash_data_key_attributes(df):
     return df
 
 # # Load datasets (adjust file paths as needed)
-# crashes_df = pd.read_csv('data/raw/crashdata2022-present.csv')
-# vehicle_crashes_df = pd.read_csv('data/raw/vehiclecrashdata2022-present.csv')
+# crashes_df = pd.read_csv('../data/raw/crashdata2022-present.csv')
+# vehicle_crashes_df = pd.read_csv('../data/raw/vehiclecrashdata2022-present.csv')
 
 # # Applying the updated preprocessing functions
 # preprocessed_crashes_data_key = preprocess_crashes_data_key_attributes(crashes_df)
 # preprocessed_vehicle_data_key = preprocess_vehicle_crash_data_key_attributes(vehicle_crashes_df)
 
 # # Save preprocessed data
-# preprocessed_crashes_data_key.to_csv('data/processed/preprocessed_crashes_data.csv', index=False)
-# preprocessed_vehicle_data_key.to_csv('data/processed/preprocessed_vehicle_data.csv', index=False)
+# preprocessed_crashes_data_key.to_csv('../data/processed/preprocessed_crashes_data.csv', index=False)
+# preprocessed_vehicle_data_key.to_csv('../data/processed/preprocessed_vehicle_data.csv', index=False)
 
 # print("Preprocessing complete, files saved in 'data/processed/'")

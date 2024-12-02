@@ -1,3 +1,63 @@
-*.ipynb_checkpoints
+# Byte-compiled Python files
 __pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Virtual environments
+venv/
+env/
+*.egg-info/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Operating system files
 .DS_Store
+Thumbs.db
+
+# Data files
+*.csv
+*.tsv
+*.json
+*.xlsx
+*.h5
+*.db
+
+# Processed data files (add specific paths if needed)
+data/processed/
+data/interim/
+data/raw/
+
+# Output files
+output/
+*.model
+*.ckpt
+*.pkl
+
+# VS Code settings
+.vscode/
+*.code-workspace
+
+# Environment files
+.env
+*.env
+
+# Ignore any files created by pytest
+.pytest_cache/
+
+# Ignore coverage reports
+htmlcov/
+.coverage
+*.cover
+*.py,cover
+
+# Ignore built files
+build/
+dist/
+*.egg
