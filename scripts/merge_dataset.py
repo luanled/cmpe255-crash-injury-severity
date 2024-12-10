@@ -1,56 +1,50 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-# Load the preprocessed datasets
-crashes_data_path = '../data/processed/preprocessed_crashes_data.csv'
-vehicle_data_path = '../data/processed/preprocessed_vehicle_data.csv'
+# Load preprocessed datasets
+crashes_df = pd.read_csv('../data/processed/processed_crashes.csv')
+vehicles_df = pd.read_csv('../data/processed/processed_vehicles.csv')
 
-# Read the datasets
-crashes_df = pd.read_csv(crashes_data_path)
-vehicle_df = pd.read_csv(vehicle_data_path)
+# Merge datasets
+merged_df = pd.merge(crashes_df, vehicles_df, how='inner', left_on='Name', right_on='CrashName')
 
-# Step 1: Merge the datasets on the reference columns ('Name' and 'CrashName')
-merged_df = pd.merge(crashes_df, vehicle_df, how='inner', left_on='Name', right_on='CrashName')
+# Create severity mapping
+severity_mapping = {
+    'Fatal': 4, 
+    'Severe': 3, 
+    'Moderate': 2, 
+    'Minor': 1, 
+    'NoInjury': 0
+}
 
-# Step 2: Define the severity determination function
-def determine_severity(row):
-    if row['FatalInjuries'] > 0:
-        return 'Fatal'
-    elif row['SevereInjuries'] > 0:
-        return 'Severe'
-    elif row['ModerateInjuries'] > 0:
-        return 'Moderate'
-    elif row['MinorInjuries'] > 0:
-        return 'Minor'
-    else:
-        return 'NoInjury'
-
-# Step 3: Apply the function to create the 'Severity' column
-merged_df['Severity'] = merged_df.apply(determine_severity, axis=1)
-
-# Step 4: Map severity levels to numerical labels
-severity_mapping = {'NoInjury': 0, 'Minor': 1, 'Moderate': 2, 'Severe': 3, 'Fatal': 4}
+# Derive Severity
+merged_df['Severity'] = merged_df.apply(
+    lambda row: 'Fatal' if row['FatalInjuries'] > 0 else 
+                'Severe' if row['SevereInjuries'] > 0 else
+                'Moderate' if row['ModerateInjuries'] > 0 else
+                'Minor' if row['MinorInjuries'] > 0 else
+                'NoInjury', axis=1
+)
 merged_df['Severity_Code'] = merged_df['Severity'].map(severity_mapping)
 
-# Step 5: Prepare features (X) and target variable (y)
-# Include the new fields: 'PrimaryCollisionFactor_Code', 'CollisionType_Code', 'HitAndRunFlag'
-X = merged_df[['PartyType_Code', 'Sobriety_Code', 'Age', 'SpeedingFlag', 'PrimaryCollisionFactor_Code', 'CollisionType_Code', 'HitAndRunFlag']]
+# Select features and target
+features = [
+    'PartyType_Code', 'Sobriety_Code', 'Age', 'PrimaryCollisionFactor_Code', 
+    'CollisionType_Code', 'VehicleDamage_Code', 'MovementPrecedingCollision_Code', 
+    'ViolationCode', 'CrashTime', 'Distance'
+]
+X = merged_df[features]
 y = merged_df['Severity_Code']
 
-# Step 6: Split the dataset into training and testing sets
+# Split into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42, stratify=y  # Stratify to preserve class distribution
+    X, y, test_size=0.2, random_state=42, stratify=y
 )
 
-# Step 7: Save the splits
-# Save X_train and X_test without headers
+# Save splits
 X_train.to_csv('../data/processed/X_train.csv', index=False)
 X_test.to_csv('../data/processed/X_test.csv', index=False)
-
-# Save y_train and y_test with headers
 y_train.to_csv('../data/processed/y_train.csv', index=False, header=True)
 y_test.to_csv('../data/processed/y_test.csv', index=False, header=True)
 
-# Step 8: Verify alignment of indices
-print("Are indices aligned between X_test and y_test?", X_test.index.equals(y_test.index))
-print("Data merging and splitting completed successfully!")
+print("Data merging and splitting completed successfully.")
