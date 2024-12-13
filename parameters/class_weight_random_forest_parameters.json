@@ -1,0 +1,28 @@
+{
+    "model_type": "RandomForest with Class Weights",
+    "parameters": {
+        "n_estimators": 100,
+        "max_depth": null,
+        "min_samples_split": 2,
+        "min_samples_leaf": 1,
+        "class_weight": {
+            "0": 0.3633286910163679,
+            "1": 0.7129801052043845,
+            "2": 1.5291818983990924,
+            "3": 6.763869528854196,
+            "4": 23.084681255946716
+        },
+        "random_state": 42
+    },
+    "pipeline_steps": [
+        "scaler (StandardScaler)",
+        "classifier (RandomForestClassifier with class_weight)"
+    ],
+    "class_weight_mapping": {
+        "0": 0.3633286910163679,
+        "1": 0.7129801052043845,
+        "2": 1.5291818983990924,
+        "3": 6.763869528854196,
+        "4": 23.084681255946716
+    }
+}
